@@ -7,11 +7,12 @@ class LoginModel{
 	private $randomString = "ffsdsfdfsdffsd";
 	private $storedUsername;
 	
+	
 	//Funktion som tar emot filtrerade användarnamn och lösenord.
-	public function loginValidation($username, $password)
+	public function loginValidation($username, $password, $userAgent)
 	{	
 		//Specificerar uppgifter för anslutning mot önskad datorbas samt SQL-Query
-		$myConnection = new mysqli("127.0.0.1", "root", "", "Login");
+		$myConnection = new mysqli("127.0.0.1", "root", "", "lab2");
 		$sqlCommand = "SELECT * FROM members WHERE User='$username' AND Password='$password'";
 	
 		//Sparar undan resultatet i variabler
@@ -21,7 +22,9 @@ class LoginModel{
 		//Kontroll för om lösenord och användarnamn var korrekt
 		if($row_count > 0){
 			$_SESSION["ValidLogin"] = $username;
+			$_SESSION["UserAgent"] = $userAgent;
 			$username = $this->storedUsername;
+			
 			return true;
 		}else{return false;}
 	}
@@ -29,7 +32,7 @@ class LoginModel{
 	//Kontroll för om användaren är inloggad sedan tidigare med sessions eller ej..
 	public function getUserIsAuthenticated($userAgent){
 		if(isset($_SESSION["ValidLogin"])){
-			if(isset($_SESSION["ValidLogin"])){
+			if(isset($_SESSION['UserAgent']) && $_SESSION['UserAgent'] === $userAgent){
 				$this->isTheUserAuthenticated = true;
 				}
 				else{return false;}

@@ -1,10 +1,10 @@
 <?php
 
-require_once('.\View\LoginView.php');
-require_once('.\Model\LoginModel.php');
-require_once('.\View\LoggedInView.php');
-require_once('.\ServiceHelper\ServiceHelper.php');
-require_once('.\Cookie\CookieStorage.php');
+require_once('LoginView.php');
+require_once('LoginModel.php');
+require_once('LoggedInView.php');
+require_once('ServiceHelper.php');
+require_once('CookieStorage.php');
 
 class LoginController{
 
@@ -23,8 +23,7 @@ class LoginController{
 	$this->loggedInView = new LoggedInView();
 	$this->serviceHelper = new serviceHelper();
 	$this->cookieStorage = new CookieStorage();
-	
-	$this->con = new mysqli("127.0.0.1", "root", "", "Login");
+	$this->con = new mysqli("127.0.0.1", "root", "", "lab2");
 	}
 	
 	public function doController(){
@@ -50,13 +49,15 @@ class LoginController{
 		//Tvättar strängarna från farligheter så som SQL-Injections..
 		$safeCollectedUsername = mysqli_real_escape_string($this->con ,$collectedUser);
 		$safeCollectedPassword = mysqli_real_escape_string($this->con ,$collectedPass);
+		$wBrowserAgent = $this->serviceHelper->userAgent();
 		
 		//Skickar in de säkra variablerna till datorbasen
-		$userAndPass = $this->model->loginValidation($safeCollectedUsername, $safeCollectedPassword);
+		$userAndPass = $this->model->loginValidation($safeCollectedUsername, $safeCollectedPassword, $wBrowserAgent);
 		
 		//Returnerar false eller true..
 		return $userAndPass;
 	}
+	
 	
 	public function collectAndVerifyInfoFromUser(){
 		
